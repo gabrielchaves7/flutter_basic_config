@@ -1,0 +1,6 @@
+package com.tenis.certo.tenis_certo
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
