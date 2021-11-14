@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   get_it: ^7.2.0
   bloc: ^7.2.1
+  flutter_bloc: ^7.3.3
+  http: ^0.13.4
+  mockito: ^5.0.16
+  build_runner: ^2.1.5
 
 dev_dependencies:
   flutter_test:
