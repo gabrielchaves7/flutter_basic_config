@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1071038559637",
+    "project_id": "tenis-certo",
+    "storage_bucket": "tenis-certo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071038559637:android:8a65715d071d341cf4f29c",
+        "android_client_info": {
+          "package_name": "com.tenis.certo.tenis_certo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1071038559637-lrajsok634e0o56vpv9bnh59u49hi466.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1FxRvZ0OsHLXrMDApplU6pITs5U0B4LQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1071038559637-lrajsok634e0o56vpv9bnh59u49hi466.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
