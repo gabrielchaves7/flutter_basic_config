@@ -1,4 +1,4 @@
-# tenis_certo
+# Flutter basic config with firebase
 
 A new Flutter project.
 
