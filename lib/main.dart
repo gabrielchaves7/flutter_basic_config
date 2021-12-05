@@ -1,22 +1,38 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:tenis_certo/pages/home_page.dart';
+import 'package:tenis_certo/state/counter_cubit.dart';
 
 import 'env/environment.dart';
 
-void main() {
+void setup() {
   const String environment = String.fromEnvironment(
     'ENVIRONMENT',
     defaultValue: Environment.DEV,
   );
-
   Environment().initConfig(environment);
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+
+  GetIt.I.registerSingleton<CounterCubit>(CounterCubit());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+void main() {
+  setup();
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const App());
+}
+
+Future<void> initializeFlutterFire() async {
+  await Firebase.initializeApp();
+  RemoteConfig remoteConfig = RemoteConfig.instance;
+  await remoteConfig.fetchAndActivate();
+  GetIt.I.registerSingleton<RemoteConfig>(remoteConfig);
+}
+
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,87 +41,23 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+      home: FutureBuilder<void>(
+        future:
+            initializeFlutterFire(), // a previously-obtained Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return BlocProvider(
+              create: (_) => GetIt.I<CounterCubit>(),
+              child: HomePage(),
+            );
+          } else if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  bool _initialized = false;
-  bool _error = false;
-  bool updated = false;
-  late RemoteConfig remoteConfig;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  void initializeFlutterFire() async {
-    try {
-      await Firebase.initializeApp();
-      FirebaseOptions remoteConfig = RemoteConfig.instance;
-      await remoteConfig.fetchAndActivate();
-      setState(() {
-        _initialized = true;
-      });
-    } catch (e) {
-      setState(() {
-        _error = true;
-      });
-    }
-  }
-
-  @override
-  void initState() {
-    initializeFlutterFire();
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_error) {
-      return const Text("Não foi possível inicializar o firebase");
-    }
-
-    if (!_initialized) {
-      return const CircularProgressIndicator();
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text('Welcome ${remoteConfig.getString('welcome_message')}')
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }

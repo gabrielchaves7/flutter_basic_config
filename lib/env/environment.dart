@@ -1,7 +1,7 @@
 import 'package:tenis_certo/env/prod_config.dart';
 import 'package:tenis_certo/env/stage_config.dart';
 
-import '../base_config.dart';
+import 'base_config.dart';
 import 'dev_config.dart';
 
 class Environment {

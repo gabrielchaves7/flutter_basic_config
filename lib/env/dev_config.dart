@@ -1,4 +1,4 @@
-import '../base_config.dart';
+import 'base_config.dart';
 
 class DevConfig implements BaseConfig {
   String get apiHost => "localhost";
