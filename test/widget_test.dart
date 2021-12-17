@@ -1,30 +1,49 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:tenis_certo/main.dart';
+import 'package:get_it/get_it.dart';
+import 'package:tenis_certo/pages/home_page.dart';
+import 'package:tenis_certo/state/counter_cubit.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  //run before each test
+  setUp(() {
+    final CounterCubit counterCubit = CounterCubit();
+    GetIt.I.registerSingleton<CounterCubit>(counterCubit);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  //run after each test
+  tearDown(() {
+    GetIt.I.unregister<CounterCubit>();
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  Future<void> _initWidget(WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        title: 'Flutter Demo',
+        home: HomePage(),
+      ),
+    );
+  }
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('Should show text and floatingActionButton',
+      (WidgetTester tester) async {
+    await _initWidget(tester);
+
+    expect(find.byType(FloatingActionButton), findsOneWidget);
+    expect(find.text('Clicked: 1'), findsOneWidget);
+  });
+
+  testWidgets(
+      'When floatingActionButton is clicked should call CounterCubit.increment',
+      (WidgetTester tester) async {
+    await _initWidget(tester);
+
+    expect(find.byType(FloatingActionButton), findsOneWidget);
+    expect(find.text('Clicked: 1'), findsOneWidget);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Clicked: 2'), findsOneWidget);
   });
 }
