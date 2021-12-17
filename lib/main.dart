@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:tenis_certo/pages/home_page.dart';
-import 'package:tenis_certo/state/counter_cubit.dart';
 
 void setup() {
-  GetIt.I.registerSingleton<CounterCubit>(CounterCubit());
+  //GetIt.I.registerSingleton<CounterCubit>(CounterCubit());
 }
 
 void main() {
